@@ -71,3 +71,7 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 
+# /cmake-build-debug/
+!/cmake-build-debug
+/cmake-build-debug/*
+!/cmake-build-debug/bin
