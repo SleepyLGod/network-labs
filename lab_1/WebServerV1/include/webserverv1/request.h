@@ -12,6 +12,9 @@
 #include "map"
 #include "sstream"
 
+/**
+ * @brief the class to process request
+ */
 class Request {
 public:
     std::string request_type_; // type of the request
@@ -20,15 +23,25 @@ public:
 
     std::map<std::string, std::string> request_header_; // request header
 
-    Request(std::string);
+    explicit Request(std::string);
 };
 
+/**
+ * @brief check out if the string a ends with string b
+ * @param a
+ * @param b
+ * @return bool
+ */
 bool EndsWith(std::string a, std::string b) {
     if (a.length() >= b.length())
         return (0 == a.compare(a.length() - b.length(), b.length(), b));
     return false;
 }
 
+/**
+ * @brief constructor
+ * @param request
+ */
 Request::Request(std::string request) {
     std::istringstream istringstream(request);
     std::string line;
