@@ -13,6 +13,9 @@
 #include <arpa/inet.h>
 #include "thread_encapsulation.h"
 
+/**
+ * @brief the class of http server configuration
+ */
 class HttpServer {
 public:
     HttpServer();
@@ -39,14 +42,24 @@ private:
     std::string base_path_;
 };
 
+/**
+ * @brief constructor
+ */
 HttpServer::HttpServer() {
     this->port_ = 8080;
-    this->ip_to_listen_ = "0.0.0.0";
-    this->max_thread_num_ = 30;
-    this->base_path_ = "/home/samuel/exp1";
+    this->ip_to_listen_ = server_config::ip_to_listen;
+    this->max_thread_num_ = server_config::max_thread_num;
+    this->base_path_ = server_config::path;
     this->is_stoped_ = true;
 }
 
+/**
+ * @brief constructor
+ * @param ip
+ * @param port
+ * @param max_thread
+ * @param path
+ */
 HttpServer::HttpServer(std::string ip, int port, int max_thread, std::string path) {
     this->ip_to_listen_ = ip;
     this->port_ = port;
@@ -55,22 +68,42 @@ HttpServer::HttpServer(std::string ip, int port, int max_thread, std::string pat
     this->is_stoped_ = true;
 }
 
+/**
+ * @brief getter
+ * @return string
+ */
 std::string HttpServer::get_base_path() {
     return this->base_path_;
 }
 
+/**
+ * @brief getter
+ * @return string
+ */
 std::string HttpServer::get_ip_to_listen() {
     return this->ip_to_listen_;
 }
 
+/**
+ * @brief getter
+ * @return int
+ */
 int HttpServer::get_max_thread_num() {
     return this->max_thread_num_;
 }
 
+/**
+ * @brief getter
+ * @return int
+ */
 int HttpServer::get_port() {
     return this->port_;
 }
 
+/**
+ * @brief setter
+ * @param path
+ */
 void HttpServer::set_base_path(std::string path) {
     if (this->base_path_ != path) {
         this->base_path_ = path;
@@ -78,6 +111,10 @@ void HttpServer::set_base_path(std::string path) {
     }
 }
 
+/**
+ * @brief setter
+ * @param ip
+ */
 void HttpServer::set_ip_to_listen(std::string ip) {
     if (this->ip_to_listen_ != ip) {
         this->ip_to_listen_ = ip;
@@ -85,6 +122,10 @@ void HttpServer::set_ip_to_listen(std::string ip) {
     }
 }
 
+/**
+ * @brief setter
+ * @param num
+ */
 void HttpServer::set_max_thread_num(int num) {
     if (this->max_thread_num_ != num) {
         this->max_thread_num_ = num;
@@ -92,6 +133,10 @@ void HttpServer::set_max_thread_num(int num) {
     }
 }
 
+/**
+ * @brief setter
+ * @param port
+ */
 void HttpServer::set_port(int port) {
     if (port != this->port_) {
         this->port_ = port;
@@ -99,11 +144,15 @@ void HttpServer::set_port(int port) {
     }
 }
 
+/**
+ * @brief run the server
+ */
 void HttpServer::Run() {
     this->is_stoped_ = false;
     std::cout << "Server Started" << std::endl;
-    int server_fd, new_socket;
-    struct sockaddr_in address;
+    int server_fd;
+    int new_socket;
+    struct sockaddr_in address{};
     int opt = 1;
     int addrlen = sizeof(address);
     char buffer[1024] = {0};
@@ -113,7 +162,8 @@ void HttpServer::Run() {
         exit(EXIT_FAILURE);
     }
     // 配置socket参数
-    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT,  & opt, sizeof(opt))) {
+    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT,
+                    & opt, sizeof(opt))) {
         perror("setsocketopt");
         exit(EXIT_FAILURE);
     }
@@ -137,8 +187,7 @@ void HttpServer::Run() {
     std::vector<ThreadEncapsulation *> threads_pool;
     std::vector<bool> threads_status;
     while(true) {
-        // 阻塞监听
-        if (this->is_stoped_) {
+        if (this->is_stoped_) { // 阻塞监听
             std::cout << "* Server Stoped" << std::endl;
             return;
         }
@@ -155,19 +204,15 @@ void HttpServer::Run() {
                 i--;
             }
         }
-//        cout << "目前有" << threads_pool.size() << "个连接" << endl;
-        if (threads_pool.size() < this->max_thread_num_) {
-            // 如果还可以加入
+        std::cout << "目前有" << threads_pool.size() << "个连接" << std::endl;
+        if (threads_pool.size() < this->max_thread_num_) { // 如果还可以加入
             ThreadEncapsulation client;
             client.CreateThread(new_socket, ip_in);
             threads_pool.push_back(&client);
             client.is_added_ = true;
-        } else {
-            // 如果已经满了，持续等待直到有空闲
-            while (1) {
-                if (this->is_stoped_) {
-                    return;
-                }
+        } else { // 如果已经满了，持续等待直到有空闲
+            while (true) {
+                if (this->is_stoped_) return;
                 bool flag = false;
                 for (int i = 0; i < threads_pool.size(); i++) {
                     if (threads_pool.at(i)->is_finished_) {
@@ -176,19 +221,22 @@ void HttpServer::Run() {
                         flag = true;
                     }
                 }
-                if (flag) {
-                    break;
-                }
+                if (flag) break;
             }
         }
     }
 }
 
-
+/**
+ * @brief stop the server
+ */
 void HttpServer::Stop() {
     this->is_stoped_ = true;
 }
 
+/**
+ * @brief rerun the server
+ */
 void HttpServer::ReStart() {
     std::cout << "* Server Restarting" << std::endl;
     this->is_stoped_ = true;
