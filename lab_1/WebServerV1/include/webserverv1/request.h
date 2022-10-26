@@ -23,7 +23,7 @@ public:
 
     std::map<std::string, std::string> request_header_; // request header
 
-    explicit Request(std::string);
+    explicit Request(const std::string&);
 };
 
 /**
@@ -32,7 +32,7 @@ public:
  * @param b
  * @return bool
  */
-bool EndsWith(std::string a, std::string b) {
+bool EndsWith(const std::string& a, const std::string& b) {
     if (a.length() >= b.length())
         return (0 == a.compare(a.length() - b.length(), b.length(), b));
     return false;
@@ -42,7 +42,7 @@ bool EndsWith(std::string a, std::string b) {
  * @brief constructor
  * @param request
  */
-Request::Request(std::string request) {
+Request::Request(const std::string& request) {
     std::istringstream istringstream(request);
     std::string line;
     getline(istringstream, line); // first line: request line
