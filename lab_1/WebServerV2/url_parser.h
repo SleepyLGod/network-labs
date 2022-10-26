@@ -25,7 +25,7 @@ public:
     UrlParser();
     static std::map<std::string, std::string> content_type_;
     static std::string Handle(std::string path);
-    static bool CheckPath(std::string);
+    static bool CheckPath(std::string, std::string);
 };
 
 #endif // URL_PARSER_H

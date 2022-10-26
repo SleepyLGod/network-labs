@@ -11,7 +11,6 @@
 #include <cstdlib>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include "thread_encapsulation.h"
 
 /**
  * @brief the class of http server configuration
@@ -41,7 +40,7 @@ public:
     void ReStart();
 
 signals:
-    void PrintMessage(QString);
+    void print_message(QString);
 
 private:
     bool is_stoped_;

@@ -13,6 +13,7 @@
 #include <vector>
 #include "response.h"
 #include "url_parser.h"
+#include "server.h"
 
 /**
  * @brief the encapsulation of the standard lib <thread>
@@ -24,7 +25,7 @@ public:
     int flag_{};
 
     ThreadEncapsulation();
-    void CreateThread(int, std::string);
+    void CreateThread(int, std::string, HttpServer*);
 };
 
 #endif // THREAD_ENCAPSULATION_H

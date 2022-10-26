@@ -10,10 +10,11 @@
 #include <unistd.h>
 #include "thread_encapsulation.h"
 
+void LogPrint(Response, Request, std::string);
+void ClientThreadReceive(int, std::string, ThreadEncapsulation *, HttpServer *);
 bool CheckIp(std::string);
 bool CheckPath(std::string);
 bool CheckPort(std::string);
 bool CheckThreadLimit(std::string);
-void LogPrint(Response, Request, std::string);
 
 #endif // UTILS_H

@@ -1,4 +1,7 @@
 #include "server.h"
+#include "utils.h"
+#include "response.h"
+#include "thread_encapsulation.h"
 
 /**
  * @brief constructor
@@ -7,7 +10,7 @@ HttpServer::HttpServer(QObject * parent) {
     this->port_ = 8080;
     this->ip_to_listen_ = server_config::ip_to_listen;
     this->max_thread_num_ = server_config::max_thread_num;
-    this->base_path_ = server_config::path;
+    this->base_path_ = "executable/static/";
     this->is_stoped_ = true;
     this->output = nullptr;
 }
@@ -140,6 +143,7 @@ void HttpServer::Run() {
         perror("listen");
         exit(EXIT_FAILURE);
     }
+
     Print("* Running on http://" + this->ip_to_listen_ + ":" + std::to_string(this->port_) + "/ (Click Stop button to quit)\n");
     std::cout << "* Running on http://" << this->ip_to_listen_ << ":"
                 <<  this->port_ << "/ (Press CTRL+C to quit)" << std::endl;
@@ -169,7 +173,7 @@ void HttpServer::Run() {
         std::cout << "目前有" << threads_pool.size() << "个连接" << std::endl;
         if (threads_pool.size() < this->max_thread_num_) { // 如果还可以加入
             ThreadEncapsulation client;
-            client.CreateThread(new_socket, ip_in);
+            client.CreateThread(new_socket, ip_in, this);
             threads_pool.push_back(&client);
             client.is_added_ = true;
         } else { // 如果已经满了，持续等待直到有空闲
@@ -218,7 +222,7 @@ void HttpServer::Print(std::string s) {
     QString qs = output->toPlainText();
     std::string tmp = qs.toUtf8().constData();
     QString new_string = QString::fromStdString(tmp + s);
-    Q_EMIT PrintMessage(new_string);
+    Q_EMIT print_message(new_string);
 //    std::cout << output->toPlainText().toStdString();
 //    this->output->setText("噜啦啦");
 }

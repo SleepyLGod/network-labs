@@ -74,14 +74,15 @@ std::string UrlParser::Handle(std::string path) {
  * @param path
  * @return bool
  */
-bool UrlParser::CheckPath(std::string path) {
+bool UrlParser::CheckPath(std::string path, std::string base_path) {
     // 检查是否越界
-    std::string base_path = std::string(server_config::path);
     path = Handle(path);
     if (path.size() < base_path.size()) {
         return false;
     } else {
-        if (path.substr(0, base_path.size()) == base_path) return true;
+        if (path.substr(0, base_path.size()) == base_path) {
+            return true;
+        }
         return false;
     }
 }
