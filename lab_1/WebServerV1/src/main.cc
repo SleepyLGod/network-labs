@@ -1,12 +1,14 @@
 #include <cstdlib>
 #include <netinet/in.h>
 
-#include "webserverv1/server.h"
+#include "server.h"
 
 int main() {
-    int server_fd, new_socket, valread;
+    int server_fd;
+    int new_socket;
+    int valread;
     std::mutex m; // 输出日志锁
-    struct sockaddr_in address;
+    struct sockaddr_in address{};
     int opt = 1;
     int addrlen = sizeof(address);
     char buffer[1024] = {0};
@@ -78,48 +80,48 @@ int main() {
             }
         }
 
-//        std::string ip_in = std::string(inet_ntoa(address.sin_addr));
-////
-//        valread = read(new_socket, buffer, 1024);
-////        printf("%s\n", buffer);
+//        std::string ip_in_ = std::string(inet_ntoa(address.sin_addr));
 //
-//        Request request = Request(std::string(buffer));
-//
-//        Response response = Response(request);
-//        std::string path = PATH + request.request_url_;
-//        UrlParser fs;
-//        if (request.request_url_ == "/") {
-//            path = INDEX;
-//        }
-//        char file_buffer[255];
-//        if (!UrlParser::CheckPath(path)) {
-//            // 如果检测不通过，访问了上级目录
-//            response.set_status(400);
-//            fs = UrlParser(BAD_REQUEST);
-//        } else {
-//            fs = UrlParser(path);
-//            if (fs.is_ok_) {
-//                response.set_status(200);
-//            } else {
-//                fs = UrlParser(NOT_FIND);
-//                response.set_status(404);
-//            }
-//        }
-//
-//
-//        /*
-//         * 输出日志
-//         * */
-//        LogPrint(response, request, ip_in);
-//
-//        response.AddHeader("Content-Type", fs.file_type_);
-//        write(new_socket, response.ToString().c_str(), response.ToString().size()); // 写入返回头
-//        // 写入返回主体
-//        while(fs.file_.readsome(file_buffer, sizeof(file_buffer))) {
-//            write(new_socket, file_buffer, fs.file_.gcount());
-//        }
-//        close(new_socket);
-//
-//
+        valread = read(new_socket, buffer, 1024);
+//        printf("%s\n", buffer);
+
+        Request request = Request(std::string(buffer));
+
+        Response response = Response(request);
+        std::string path = server_config::path + request.request_url_;
+        UrlParser fs;
+        if (request.request_url_ == "/") {
+            path = server_config::index;
+        }
+        char file_buffer[255];
+        if (!UrlParser::CheckPath(path)) {
+            // 如果检测不通过，访问了上级目录
+            response.set_status(400);
+            fs = UrlParser(server_config::bad_request);
+        } else {
+            fs = UrlParser(path);
+            if (fs.is_ok_) {
+                response.set_status(200);
+            } else {
+                fs = UrlParser(server_config::not_found);
+                response.set_status(404);
+            }
+        }
+
+
+        /*
+         * 输出日志
+         * */
+        LogPrint(response, request, ip_in);
+
+        response.AddHeader("Content-Type", fs.file_type_);
+        write(new_socket, response.ToString().c_str(), response.ToString().size()); // 写入返回头
+        // 写入返回主体
+        while(fs.file_.readsome(file_buffer, sizeof(file_buffer))) {
+            write(new_socket, file_buffer, fs.file_.gcount());
+        }
+        close(new_socket);
+
+
     }
 }
