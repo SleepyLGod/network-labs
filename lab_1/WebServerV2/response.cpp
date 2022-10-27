@@ -34,7 +34,7 @@ void Response::AddHeader(std::string key, std::string value) {
  */
 void Response::set_status(int status) {
     this->response_status_ = status;
-    this->status_word_ = this->status_words_.find(status)->second;
+    this->status_word_ = this->status_words_.find(status)->second; // 同时设置状态字
 }
 
 /**

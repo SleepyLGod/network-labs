@@ -7,9 +7,7 @@
  * @param ip
  */
 void LogPrint(Response response, Request request, std::string ip, HttpServer * output_server) {
-    if (request.request_type_ == "") {
-        return ;
-    }
+    if (request.request_type_ == "") return ;
     auto current = std::chrono::system_clock::now();
     auto current_time = std::chrono::system_clock::to_time_t(current);
     auto out_put_time = std::string(ctime(&current_time));

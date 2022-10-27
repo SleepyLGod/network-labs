@@ -7,10 +7,10 @@
  * @brief constructor
  */
 HttpServer::HttpServer(QObject * parent) {
-    this->port_ = 8080;
+    this->port_ = server_config::port;
     this->ip_to_listen_ = server_config::ip_to_listen;
     this->max_thread_num_ = server_config::max_thread_num;
-    this->base_path_ = "executable/static/";
+    this->base_path_ = server_config::path;
     this->is_stoped_ = true;
     this->output = nullptr;
 }

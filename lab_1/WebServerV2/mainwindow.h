@@ -1,3 +1,8 @@
+/**
+ * @author dong
+ * @date 27/10/2022
+ */
+
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 

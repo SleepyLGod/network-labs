@@ -20,7 +20,6 @@ public:
     std::string request_type_; // type of the request
     std::string http_version_; // http version
     std::string request_url_; // url of the request
-
     std::map<std::string, std::string> request_header_; // request header
 
     explicit Request(const std::string&);
@@ -52,9 +51,7 @@ Request::Request(const std::string& request) {
     words >> this->http_version_;
     // request header:
     while (getline(istringstream, line, '\n')) {
-        if (line == "\r") {
-            break;
-        }
+        if (line == "\r") break;
         std::string key = line.substr(0, line.find_first_of(':'));
         std::string value = line.substr(line.find_first_of(':'), line.size() - line.find_first_of(':') - 1);
         this->request_header_.insert({key, value});

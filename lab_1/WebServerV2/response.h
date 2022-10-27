@@ -23,10 +23,10 @@ public:
 
     Response(int status, std::string http_version);
     explicit Response(Request);
+    std::string ToString(); // the return string of the response
     void AddHeader(std::string key, std::string value);
     void set_status(int status);
     void set_http_version(std::string http_version);
-    std::string ToString(); // the return string of the response
 
 private:
     const std::map<int, std::string> status_words_ = {

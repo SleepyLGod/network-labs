@@ -1,29 +1,36 @@
 #include "url_parser.h"
 
 std::map<std::string, std::string> UrlParser::content_type_ = {
-        {"png", "image/png"},
-        {"gif", "image/gif"},
-        {"ico", "image/x-icon"},
-        {"cur", "image/x-icon"},
-        {"jpg", "image/jpeg"},
-        {"jpeg", "image/jpeg"},
-        {"jfif", "image/jpeg"},
-        {"pjpeg", "image/jpeg"},
-        {"pjp", "image/jpeg"},
-        {"apng", "image/apng"},
-        {"svg", "image/svg+xml"},
-        {"tif", "image/tiff"},
-        {"tiff",  "image/tiff"},
-        {"webp", "image/webp"},
-        {"txt", "text/plain; charset=utf-8"},
-        {"css", "text/css; charset=utf-8"},
-        {"html", "text/html; charset=utf-8"}
+    {"png", "image/png"},
+
+    {"gif", "image/gif"},
+
+    {"ico", "image/x-icon"},
+    {"cur", "image/x-icon"},
+
+    {"jpg", "image/jpeg"},
+    {"jpeg", "image/jpeg"},
+    {"jfif", "image/jpeg"},
+    {"pjpeg", "image/jpeg"},
+    {"pjp", "image/jpeg"},
+
+    {"apng", "image/apng"},
+
+    {"svg", "image/svg+xml"},
+
+    {"tif", "image/tiff"},
+    {"tiff",  "image/tiff"},
+    {"webp", "image/webp"},
+
+    {"txt", "text/plain; charset=utf-8"},
+    {"css", "text/css; charset=utf-8"},
+    {"html", "text/html; charset=utf-8"}
 };
 
 /**
  * @brief constructor
  */
-UrlParser::UrlParser() = default;
+UrlParser::UrlParser() {return;}
 
 /**
  * @brief constructor
@@ -55,6 +62,7 @@ std::string UrlParser::Handle(std::string path) {
         std::string right = path.substr(path.find("/./") + 3, path.size() - path.find('.') - 3);
         path = left + "/" + right;
     }
+
     while (path.find("/../") != std::string::npos) { // 去除所有的..
         // 如果存在..
         std::string left = path.substr(0, path.find("/../")); // 类似于 /abc/a/.. 会变为 /abc/a/
@@ -80,9 +88,7 @@ bool UrlParser::CheckPath(std::string path, std::string base_path) {
     if (path.size() < base_path.size()) {
         return false;
     } else {
-        if (path.substr(0, base_path.size()) == base_path) {
-            return true;
-        }
+        if (path.substr(0, base_path.size()) == base_path) return true;
         return false;
     }
 }

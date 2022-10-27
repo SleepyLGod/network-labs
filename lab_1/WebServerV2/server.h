@@ -15,7 +15,7 @@
 /**
  * @brief the class of http server configuration
  */
-class HttpServer : public QThread{
+class HttpServer : public QThread {
     Q_OBJECT
 public:
 
@@ -48,6 +48,9 @@ private:
     int max_thread_num_;
     std::string ip_to_listen_;
     std::string base_path_;
+    const std::string not_find_ = "static/404.html";
+    const std::string bad_request_ = "static/400.html";
+    const std::string index_ = "static/index.html";
     int server_fd_;
 };
 
