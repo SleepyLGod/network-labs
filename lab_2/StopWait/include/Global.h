@@ -1,7 +1,7 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
-#define TESTING true
-#define TESTQR true
+#define TESTING true // TESTING表示是否在测试，如果为 true 则会输出窗口大小等信息
+#define TESTQR true // TESTQR表示是否在测试快速重传，如果为 true 则会输出快速重传信息
 
 #include "Tool.h"
 #include "NetworkService.h"
