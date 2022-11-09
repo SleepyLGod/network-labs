@@ -9,6 +9,7 @@
 #include <iostream>
 #include <sys/socket.h>
 #include <cstdlib>
+#include <utility>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include "thread_encapsulation.h"
@@ -22,8 +23,8 @@ public:
     HttpServer(std::string, int, int, std::string);
     void set_port(int);
     void set_max_thread_num(int);
-    void set_ip_to_listen(std::string);
-    void set_base_path(std::string);
+    void set_ip_to_listen(const std::string&);
+    void set_base_path(const std::string&);
 
     int get_port();
     int get_max_thread_num();
@@ -46,7 +47,7 @@ private:
  * @brief constructor
  */
 HttpServer::HttpServer() {
-    this->port_ = 8080;
+    this->port_ = server_config::port;
     this->ip_to_listen_ = server_config::ip_to_listen;
     this->max_thread_num_ = server_config::max_thread_num;
     this->base_path_ = server_config::path;
@@ -61,10 +62,10 @@ HttpServer::HttpServer() {
  * @param path
  */
 HttpServer::HttpServer(std::string ip, int port, int max_thread, std::string path) {
-    this->ip_to_listen_ = ip;
+    this->ip_to_listen_ = std::move(ip);
     this->port_ = port;
     this->max_thread_num_ = max_thread;
-    this->base_path_ = path;
+    this->base_path_ = std::move(path);
     this->is_stoped_ = true;
 }
 
@@ -104,7 +105,7 @@ int HttpServer::get_port() {
  * @brief setter
  * @param path
  */
-void HttpServer::set_base_path(std::string path) {
+void HttpServer::set_base_path(const std::string& path) {
     if (this->base_path_ != path) {
         this->base_path_ = path;
         ReStart();
@@ -115,7 +116,7 @@ void HttpServer::set_base_path(std::string path) {
  * @brief setter
  * @param ip
  */
-void HttpServer::set_ip_to_listen(std::string ip) {
+void HttpServer::set_ip_to_listen(const std::string& ip) {
     if (this->ip_to_listen_ != ip) {
         this->ip_to_listen_ = ip;
         ReStart();

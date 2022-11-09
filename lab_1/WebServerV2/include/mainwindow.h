@@ -1,8 +1,3 @@
-/**
- * @author dong
- * @date 27/10/2022
- */
-
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
@@ -16,27 +11,29 @@
 #include <vector>
 #include <mutex>
 #include <string>
-#include "server.h"
-#include "utils.h"
 
+#include "Request.h"
+#include "utils.h"
+#include "Fs.h"
+#include "my_thread.h"
+#include "http_server.h"
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
+
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    HttpServer * server = nullptr;
+    http_server * server = nullptr;
     QThread workerThread;
-    void StartWraper();
-    void StopWrapper();
-    void RestartWrapper();
-    void UpdateText();
-
+    void start_wraper();
+    void stop_wrapper();
+    void restart_wrapper();
+    void update_text();
 private:
     Ui::MainWindow *ui;
 };
-
 #endif // MAINWINDOW_H

@@ -10,6 +10,7 @@
 #include <mutex>
 #include <iostream>
 #include <unistd.h>
+#include <utility>
 #include <vector>
 #include "response.h"
 #include "url_parser.h"
@@ -62,7 +63,7 @@ void ClientThreadReceive(int new_socket, std::string ip_in, ThreadEncapsulation 
             response.set_status(404);
         }
     }
-    LogPrint(response, request, ip_in);
+    LogPrint(response, request, std::move(ip_in));
     response.AddHeader("Content-Type", urlParser.file_type_);
     write(new_socket, response.ToString().c_str(), response.ToString().size()); // 写入返回头
     // 写入返回主体

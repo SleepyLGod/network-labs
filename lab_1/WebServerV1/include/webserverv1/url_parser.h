@@ -81,7 +81,7 @@ std::string UrlParser::Handle(std::string path) {
     while(path.find("/./") != std::string::npos) { // 去除所有的.
         std::string left = path.substr(0, path.find("/./"));
         std::string right = path.substr(path.find("/./") + 3, path.size() - path.find('.') - 3);
-        path = left + "/" + right;
+        path = left.append("/").append(right); // path = left + "/" + right;
     }
     while (path.find("/../") != std::string::npos) { // 去除所有的..
         // 如果存在..

@@ -7,7 +7,7 @@ find_package (Threads)
 #target_link_libraries (WebServerV1/lib ${CMAKE_THREAD_LIBS_INIT})
 SET(CMAKE_CXX_FLAGS -pthread)
 
-#add_definitions(-DENABLE_DEBUG -DABC)
+add_definitions(-DENABLE_DEBUG -DABC)
 
 include_directories(./include/webserverv1)
 

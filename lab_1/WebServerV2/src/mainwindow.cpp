@@ -1,101 +1,95 @@
-#include "mainwindow.h"
+#include "../include/mainwindow.h"
 #include "ui_mainwindow.h"
 
 #include <QPushButton>
+#include "../include/http_server.h"
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
-{
+    , ui(new Ui::MainWindow) {
     ui->setupUi(this);
-    this->server = new HttpServer();
-
-    UpdateText();
-
+    this->server = new http_server();
+    update_text();
     // 输出
     QTextBrowser * output = this->findChild<QTextBrowser *>(QString("output"));
     server->output = output;
     QPushButton * run_button = this->findChild<QPushButton *>(QString("run"));
     QPushButton * stop_button = this->findChild<QPushButton *>(QString("stop"));
     QPushButton * restart_button = this->findChild<QPushButton *>(QString("reset"));
-    connect(run_button, &QPushButton::clicked, this, &MainWindow::StartWraper);
-    connect(stop_button, &QPushButton::clicked, this, &MainWindow::StopWrapper);
-    connect(restart_button, &QPushButton::clicked, this, &MainWindow::RestartWrapper);
+    connect(run_button, &QPushButton::clicked, this, &MainWindow::start_wraper);
+    connect(stop_button, &QPushButton::clicked, this, &MainWindow::stop_wrapper);
+    connect(restart_button, &QPushButton::clicked, this, &MainWindow::restart_wrapper);
     stop_button->setEnabled(false);
     restart_button->setEnabled(false);
 }
 
-void MainWindow::StartWraper() {
-    UpdateText();
+void MainWindow::start_wraper() {
+    update_text();
     QPushButton * run_button = this->findChild<QPushButton *>(QString("run"));
     QPushButton * stop_button = this->findChild<QPushButton *>(QString("stop"));
     QPushButton * restart_button = this->findChild<QPushButton *>(QString("reset"));
     restart_button->setEnabled(true);
     run_button->setEnabled(false);
     stop_button->setEnabled(true);
-
     QTextBrowser * output = this->findChild<QTextBrowser *>(QString("output"));
     server->moveToThread(&workerThread);
     server->start();
     connect(server, SIGNAL(print_message(QString)), output, SLOT(setText(QString)));
-    server->Print("* Server Started\n");
+    server->print("* Server Started\n");
 }
 
-void MainWindow::StopWrapper() {
+void MainWindow::stop_wrapper() {
     QPushButton * run_button = this->findChild<QPushButton *>(QString("run"));
     QPushButton * stop_button = this->findChild<QPushButton *>(QString("stop"));
     run_button->setEnabled(true);
     stop_button->setEnabled(false);
-    server->Stop();
+    server->stop();
     server->quit();
 //    workerThread.quit();
 }
 
-void MainWindow::RestartWrapper() {
-    std::string ip = std::string(this->findChild<QTextEdit *>(QString("ip"))->toPlainText().toUtf8().constData());
-    std::string port = std::string(this->findChild<QTextEdit *>(QString("port"))->toPlainText().toUtf8().constData());
-    std::string path = std::string(this->findChild<QTextEdit *>(QString("path"))->toPlainText().toUtf8().constData());
-    std::string thread_limit = std::string(this->findChild<QTextEdit *>(QString("thread_limit"))->toPlainText().toUtf8().constData());
-
-    std::cout << "结果为" << ip << ":" << port << path << std::endl;
-    if (!CheckIp(ip)) {
-        this->server->Print("New Ip is illigal\n");
+void MainWindow::restart_wrapper() {
+    string ip = string(this->findChild<QTextEdit *>(QString("ip"))->toPlainText().toUtf8().constData());
+    string port = string(this->findChild<QTextEdit *>(QString("port"))->toPlainText().toUtf8().constData());
+    string path = string(this->findChild<QTextEdit *>(QString("path"))->toPlainText().toUtf8().constData());
+    string thread_limit = string(this->findChild<QTextEdit *>(QString("thread_limit"))->toPlainText().toUtf8().constData());
+    cout << "结果为" << ip << port << path << endl;
+    if (!check_ip(ip)) {
+        this->server->print("New Ip is illigal\n");
         return;
-    } else {
-        this->server->Print("New Ip is OK\n");
     }
-    if (!CheckPath(path)) {
-        this->server->Print("New base path is illigal\n");
+    if (!check_path(path)) {
+        this->server->print("New base path is illigal\n");
         return;
-    } else {
-        this->server->Print("New base path is OK\n");
     }
-    if (!CheckPort(port)) {
-        this->server->Print("New port is illigal\n");
+    if (!check_port(port)) {
+        this->server->print("New port is illigal\n");
         return;
-    } else {
-        this->server->Print("New port is OK\n");
     }
-    if (!CheckThreadLimit(thread_limit))
-        this->server->Print("New thread limit is not in range 1-30");
+    if (!check_thread_limit(thread_limit)) {
+        this->server->print("New thread limit is not in range 1-30");
+    }
     server->set_all(ip, path, port, thread_limit);
-    StopWrapper();
-    StartWraper();
-    UpdateText();
+    stop_wrapper();
+    start_wraper();
+    update_text();
+
 }
 
 MainWindow::~MainWindow() {
     delete ui;
 }
 
-void MainWindow::UpdateText() {
+
+void MainWindow::update_text() {
     QTextEdit * ip = this->findChild<QTextEdit *>(QString("ip"));
     QTextEdit * port = this->findChild<QTextEdit *>(QString("port"));
     QTextEdit * path = this->findChild<QTextEdit *>(QString("path"));
     QTextEdit * thread_limit = this->findChild<QTextEdit *>(QString("thread_limit"));
     ip->setText(QString::fromStdString(server->get_ip_to_listen()));
-    port->setText(QString::fromStdString(std::to_string(server->get_port())));
+    port->setText(QString::fromStdString(to_string(server->get_port())));
     path->setText(QString::fromStdString(server->get_base_path()));
-    thread_limit->setText(QString::fromStdString(std::to_string(server->get_max_thread_num())));
+    thread_limit->setText(QString::fromStdString(to_string(server->get_max_thread_num())));
 }
 
