@@ -9,11 +9,11 @@ private:
 
 public:
 	StopWaitRdtReceiver();
-	virtual ~StopWaitRdtReceiver();
+	~StopWaitRdtReceiver() override;
 
 public:
 	
-	void receive(const Packet &packet);	//接收报文，将被NetworkService调用
+	void receive(const Packet &packet) override;	//接收报文，将被NetworkService调用
 };
 
 #endif
