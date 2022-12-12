@@ -127,7 +127,7 @@ void SRRdtReceiver::copy_packet(const Packet *source, Packet *dest) {
 void SRRdtReceiver::printWindow() {
     if(TESTING) {
         std::cout << "> '-' 表示该包已经被缓存 <" << std::endl;
-        if (packetState.size() == 0) {
+        if (packetState.empty()) {
             std::cout << "[ ]" << std::endl;
             return;
         }
