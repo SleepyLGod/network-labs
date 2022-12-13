@@ -1,4 +1,4 @@
-# 2nd: Design Experiment of Reliable Data Transmission Protocol
+# 2nd: Design Lab of Reliable Data Transmission Protocol
 
 ## 🍃 Tasks
 - to implement a reliable transport protocol based on GBN.
