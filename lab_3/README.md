@@ -1,6 +1,6 @@
 # 3rd: CPT-based Networking Lab
 
-⭐ using Cisco Packet Tracer simulation software to complete the content
+⭐ using [Cisco Packet Tracer](https://skillsforall.com/resources/lab-downloads) simulation software to complete the content
 
 ## 🍃 Tasks
 
