@@ -1,4 +1,4 @@
-# lab_1: Web server
+# 1st: Web Server Design (Socket Programming)
 
 ### [Version 1](./WebServerV1/)
 💫 An http server with command lines.
